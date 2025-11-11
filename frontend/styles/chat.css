@@ -1,0 +1,352 @@
+/* ===============================
+   CHAT PAGE STYLES
+==================================*/
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background-color: #f5f6fa;
+    color: #333;
+}
+
+.chat-page {
+    flex: 1;
+    display: flex;
+    gap: 0.75rem;
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+}
+
+/* ===============================
+   SESSIONS PANEL
+==================================*/
+.sessions-container {
+    width: 100%;
+    max-width: 22rem;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    padding: 1rem;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.sessions-container .session-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: #222;
+}
+
+.sessions-container .create-session-button {
+    all: unset;
+    color: #fff;
+    border-radius: 1.25rem;
+    padding: 0.5rem;
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 1rem;
+    background-color: var(--color-primary);
+    font-weight: 600;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.sessions-container .create-session-button:hover {
+    background-color: var(--color-primary);
+    transform: translateY(-1px);
+}
+
+.sessions-container .sessions-list {
+    list-style-type: none;
+    height: 100%;
+    overflow-y: auto;
+    padding-right: 0.25rem;
+}
+
+.sessions-list .session-item {
+    margin-bottom: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: #f1f1f1;
+    border-radius: 0.6rem;
+    display: flex;
+    cursor: pointer;
+    gap: 0.75rem;
+    align-items: center;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.sessions-list .session-item span {
+    color: #333;
+    flex: 1;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.sessions-list .session-item .delete-session {
+    color: #c0392b;
+    transition: color 0.2s ease;
+}
+
+.sessions-list .session-item:hover,
+.sessions-list .session-item.active {
+    color: #fff;
+    background-color: #4a76ff;
+}
+
+.sessions-list .session-item.active .delete-session,
+.sessions-list .session-item:hover .delete-session {
+    color: #fff;
+}
+
+/* ===============================
+   CHAT CONTAINER
+==================================*/
+.chat-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    padding: 1rem;
+    overflow: hidden;
+}
+
+.messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    border-radius: 10px;
+    background: linear-gradient(180deg, #e8eaf6, #fff);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Scrollbar */
+.messages::-webkit-scrollbar,
+.sessions-container .sessions-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.messages::-webkit-scrollbar-thumb,
+.sessions-container .sessions-list::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.2);
+    border-radius: 3px;
+}
+
+.messages::-webkit-scrollbar-track,
+.sessions-container .sessions-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* ===============================
+   MESSAGES
+==================================*/
+.message {
+    max-width: 75%;
+    padding: 0.65rem 1rem;
+    border-radius: 14px;
+    line-height: 1.5;
+    word-break: break-word;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.message.user {
+    align-self: flex-end;
+    background: #4a76ff;
+    color: #fff;
+    border-bottom-right-radius: 6px;
+    border-bottom-left-radius: 14px;
+}
+
+.message.model {
+    align-self: flex-start;
+    background: #f1f1f1;
+    color: #333;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 14px;
+}
+
+.message.function {
+    color: #4a76ff;
+    font-weight: 600;
+    border-radius: 1.5rem;
+    background-color: #dbe5ff;
+    padding: 0.5rem 0.75rem;
+}
+
+/* ===============================
+   CHAT FORM
+==================================*/
+.chat-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.input-group {
+    width: 100%;
+    display: flex;
+    gap: 0.75rem;
+}
+
+#message-input {
+    flex: 1;
+    padding: 0.55rem 1rem;
+    border-radius: 1.5rem;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    resize: none;
+    background-color: #fff;
+    line-height: 1.4;
+    color: #333;
+}
+
+#message-input:focus {
+    outline: none;
+    border-color: #4a76ff;
+    box-shadow: 0 0 6px rgba(74, 118, 255, 0.4);
+}
+
+.attach-btn,
+#send-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.attach-btn {
+    background: #fff;
+    color: #555;
+}
+
+.attach-btn:hover {
+    color: #4a76ff;
+    background: #f0f0f0;
+}
+
+#send-btn {
+    background-color: #4caf50;
+    color: #fff;
+}
+
+#send-btn:hover {
+    transform: scale(1.1);
+}
+
+#send-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ===============================
+   MEDIA ELEMENTS
+==================================*/
+.message-media {
+    max-width: 300px;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 0.5rem 0;
+}
+
+.message-media img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8px;
+}
+
+.message-media.preview {
+    max-width: 220px;
+}
+
+.preview-wrapper {
+    position: relative;
+    margin-bottom: 0.5rem;
+}
+
+.remove-preview {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #333;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+}
+
+.remove-preview:hover {
+    background-color: #f0f0f0;
+    color: #4a76ff;
+}
+
+.file-preview {
+    padding: 0.5rem;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 0.5rem;
+}
+
+.file-preview:empty {
+    display: none;
+}
+
+.upload-list {
+    margin-top: 0.5rem;
+}
+
+.upload-item {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.5rem;
+    border-radius: 8px;
+    background-color: #e1e3ea;
+    border: 1px solid #ccc;
+}
+
+/* ===============================
+   RESPONSIVE
+==================================*/
+@media (max-width: 600px) {
+    .messages {
+        height: 50vh;
+    }
+    .message {
+        max-width: 90%;
+    }
+    .sessions-container {
+        max-width: 100%;
+    }
+}
