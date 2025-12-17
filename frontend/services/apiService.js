@@ -2,7 +2,7 @@
 // API Configuration
 // ===========================
 const API_CONFIG = {
-    baseURL: "<BACKEND_URL>", // Configure the relevant backend url
+    baseURL: "http://localhost:8082", // Configure the relevant backend url
     headers: {
     "Content-Type": "application/json",
     },
@@ -183,6 +183,6 @@ try {
   // ===========================
   // Exports
   // ===========================
-export { buildURL, API_CONFIG };
-export default ApiService;
+window.ApiService = ApiService;
+window.API_CONFIG = API_CONFIG;
   

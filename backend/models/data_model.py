@@ -12,3 +12,9 @@ class SchoolContent(BaseModel):
     title: str  
     description: Optional[str] = None  
     attachment_urls: Optional[List[str]] = []
+
+class TeacherProfile(BaseModel):
+    teacher_id: str
+    name: str
+    subject_specialization: str
+    department: str

@@ -2,7 +2,7 @@ import sqlite3
 import json
 from datetime import date
 from typing import List, Optional
-from models.data_model import SchoolContent
+from models.data_model import SchoolContent, TeacherProfile
 
 class SQLiteDB:
     """Simple synchronous SQLite helper for DigiSchoolAgent with auto-increment ID."""
@@ -19,7 +19,7 @@ class SQLiteDB:
         return conn
 
     def _init_tables(self):
-        """Initialize the school_content table with auto-increment ID."""
+        """Initialize the school_content and teacher_profile tables."""
         with self.connect() as conn:
             cursor = conn.cursor()
             cursor.execute("""
@@ -35,7 +35,16 @@ class SQLiteDB:
                     attachment_urls TEXT
                 );
             """)
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS teacher_profile (
+                    teacher_id TEXT PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    subject_specialization TEXT NOT NULL,
+                    department TEXT NOT NULL
+                );
+            """)
             conn.commit()
+            self._insert_sample_teachers()
 
     def execute(self, query: str, params: tuple = ()):
         """Run insert, update, or delete SQL commands."""
@@ -152,6 +161,53 @@ class SQLiteDB:
             cursor.execute("DELETE FROM school_content WHERE content_id=?", (content_id,))
             conn.commit()
             return cursor.rowcount > 0  # True if a row was actually deleted
+
+    def _insert_sample_teachers(self):
+        """Insert sample teacher data if table is empty."""
+        existing = self.fetch_all("SELECT COUNT(*) as count FROM teacher_profile")
+        if existing[0]['count'] == 0:
+            teachers = [
+                ('t101', 'John Smith', 'Mathematics', 'Science'),
+                ('t102', 'Sarah Johnson', 'Biology', 'Science'),
+                ('t003', 'Mike Wilson', 'Computer Science', 'Science'),
+                ('cc002', 'Lisa Brown', 'Physics', 'Science'),
+                ('DS003', 'David Lee', 'Data Science', 'Engineering'),
+                ('DH007', 'Emma Davis', 'Physical Education', 'Sports'),
+                ('VP005', 'Robert Taylor', 'Sports Management', 'Sports'),
+                ('f001', 'Alice Green', 'Mathematics', 'Science'),
+                ('T001', 'Mark Anderson', 'Algebra', 'Mathematics'),
+                ('T002', 'Jane Miller', 'Literature', 'English'),
+                ('T003', 'Chris Wilson', 'Geometry', 'Mathematics'),
+                ('T004', 'Mary Garcia', 'General Studies', 'General'),
+                ('T005', 'Paul Martinez', 'Literature', 'English'),
+                ('T006', 'Linda Rodriguez', 'Shakespeare Studies', 'English')
+            ]
+            for teacher in teachers:
+                self.execute(
+                    "INSERT OR IGNORE INTO teacher_profile (teacher_id, name, subject_specialization, department) VALUES (?, ?, ?, ?)",
+                    teacher
+                )
+
+    def get_all_teachers(self) -> List[TeacherProfile]:
+        rows = self.fetch_all("SELECT * FROM teacher_profile")
+        return [TeacherProfile(**row) for row in rows]
+
+    def get_teacher_by_id(self, teacher_id: str) -> Optional[TeacherProfile]:
+        row = self.fetch_one("SELECT * FROM teacher_profile WHERE teacher_id=?", (teacher_id,))
+        return TeacherProfile(**row) if row else None
+
+    def get_department_analytics(self) -> dict:
+        """Get analytics data by department."""
+        # Get content counts by department
+        query = """
+            SELECT tp.department, COUNT(sc.content_id) as total_uploads,
+                   SUM(CASE WHEN LOWER(sc.content_type) LIKE '%note%' THEN 1 ELSE 0 END) as notes_count
+            FROM teacher_profile tp
+            LEFT JOIN school_content sc ON tp.teacher_id = sc.teacher_id
+            GROUP BY tp.department
+            ORDER BY total_uploads DESC
+        """
+        return self.fetch_all(query)
 
 # ----------------- Initialize database -----------------
 db = SQLiteDB("digischool.db")

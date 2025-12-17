@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>School Content Management</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .content-card { border: 1px solid #ccc; padding: 15px; margin: 10px 0; }
+        button { padding: 10px; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>School Content Management</h1>
+    <div id="content"></div>
+    
+    <script>
+        async function loadData() {
+            try {
+                const response = await fetch('http://localhost:8082/schools/');
+                const data = await response.json();
+                
+                const html = data.map(item => `
+                    <div class="content-card">
+                        <h3>${item.title}</h3>
+                        <p>Teacher: ${item.teacher_id}</p>
+                        <p>Class: ${item.class_name}</p>
+                        <p>Subject: ${item.subject || 'N/A'}</p>
+                        <p>Type: ${item.content_type}</p>
+                        <p>Description: ${item.description || 'N/A'}</p>
+                    </div>
+                `).join('');
+                
+                document.getElementById('content').innerHTML = html;
+            } catch (error) {
+                document.getElementById('content').innerHTML = 'Error: ' + error.message;
+            }
+        }
+        
+        loadData();
+    </script>
+</body>
+</html>

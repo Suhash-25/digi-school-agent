@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Smart Digi School Chat</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #chat { border: 1px solid #ccc; height: 400px; overflow-y: scroll; padding: 10px; margin: 10px 0; }
+        .message { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .user { background: #e3f2fd; text-align: right; }
+        .bot { background: #f5f5f5; }
+        #input { width: 70%; padding: 10px; }
+        button { padding: 10px 20px; }
+    </style>
+</head>
+<body>
+    <h1>Smart Digi School Agent</h1>
+    <div id="chat"></div>
+    <input type="text" id="input" placeholder="Ask me anything about your school content...">
+    <button onclick="sendMessage()">Send</button>
+    
+    <script>
+        function addMessage(text, isUser) {
+            const chat = document.getElementById('chat');
+            const div = document.createElement('div');
+            div.className = 'message ' + (isUser ? 'user' : 'bot');
+            div.innerHTML = text.replace(/\n/g, '<br>');
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
+        }
+        
+        async function sendMessage() {
+            const input = document.getElementById('input');
+            const message = input.value.trim();
+            if (!message) return;
+            
+            addMessage(message, true);
+            input.value = '';
+            
+            try {
+                const allContent = await fetch('http://localhost:8082/schools/').then(r => r.json());
+                const query = message.toLowerCase();
+                let response = "I'm your Digi School Agent. How can I help you?";
+                
+                // GREETINGS
+                if (query.match(/^(hi+|hello|hey)$/)) {
+                    response = "Hello! I can help you with:\n• Show homework, notes, assignments\n• Update, remove, or add content\n• Filter by dates or classes\n\nWhat would you like to know?";
+                }
+                // UPDATE OPERATIONS
+                else if (query.includes('update') && (query.includes('title') || query.includes('change'))) {
+                    let itemToUpdate = null;
+                    let newTitle = '';
+                    
+                    // Find what to update
+                    for (const item of allContent) {
+                        if (query.includes(item.title.toLowerCase())) {
+                            itemToUpdate = item;
+                            break;
+                        }
+                    }
+                    
+                    // Extract new title
+                    if (query.includes(' to ')) {
+                        newTitle = query.split(' to ')[1].trim();
+                    }
+                    
+                    if (itemToUpdate && newTitle) {
+                        try {
+                            const updateResponse = await fetch(`http://localhost:8082/schools/${itemToUpdate.content_id}`, {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ title: newTitle })
+                            });
+                            if (updateResponse.ok) {
+                                response = `✅ Updated "${itemToUpdate.title}" to "${newTitle}". Refresh your dashboard to see changes!`;
+                            } else {
+                                response = "Failed to update. Please try again.";
+                            }
+                        } catch (err) {
+                            response = "Error: " + err.message;
+                        }
+                    } else {
+                        response = "Please specify what to update. Example: 'update earth to globe'";
+                    }
+                }
+                // REMOVE OPERATIONS
+                else if (query.includes('remove') || query.includes('delete')) {
+                    let itemToRemove = null;
+                    
+                    for (const item of allContent) {
+                        if (query.includes(item.title.toLowerCase())) {
+                            itemToRemove = item;
+                            break;
+                        }
+                    }
+                    
+                    if (itemToRemove) {
+                        try {
+                            const deleteResponse = await fetch(`http://localhost:8082/schools/${itemToRemove.content_id}`, {
+                                method: 'DELETE'
+                            });
+                            if (deleteResponse.ok) {
+                                response = `✅ Removed "${itemToRemove.title}". Refresh your dashboard!`;
+                            } else {
+                                response = "Failed to remove. Please try again.";
+                            }
+                        } catch (err) {
+                            response = "Error: " + err.message;
+                        }
+                    } else {
+                        response = "Please specify what to remove. Example: 'remove servers'";
+                    }
+                }
+                // ADD/UPLOAD OPERATIONS
+                else if (query.includes('upload') || query.includes('add')) {
+                    let className = 'General';
+                    let subject = 'General';
+                    let contentType = 'notes';
+                    
+                    if (query.includes('b.e')) className = 'B.E';
+                    if (query.includes('grade 5')) className = 'Grade 5';
+                    if (query.includes('grade 6')) className = 'Grade 6';
+                    
+                    if (query.includes('math')) subject = 'Math';
+                    if (query.includes('science')) subject = 'Science';
+                    if (query.includes('english')) subject = 'English';
+                    
+                    if (query.includes('homework')) contentType = 'homework';
+                    if (query.includes('assignment')) contentType = 'assignment';
+                    
+                    try {
+                        const newContent = {
+                            teacher_id: 'CHAT001',
+                            class_name: className,
+                            subject: subject,
+                            content_type: contentType,
+                            title: `New ${subject} ${contentType}`,
+                            description: 'Added via chat'
+                        };
+                        
+                        const uploadResponse = await fetch('http://localhost:8082/schools/', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(newContent)
+                        });
+                        
+                        if (uploadResponse.ok) {
+                            response = `✅ Added new ${contentType} for ${className} ${subject}. Refresh your dashboard!`;
+                        } else {
+                            response = "Failed to add content. Please try again.";
+                        }
+                    } catch (err) {
+                        response = "Error: " + err.message;
+                    }
+                }
+                // SHOW CONTENT
+                else {
+                    let filteredContent = allContent;
+                    
+                    // Filter by type
+                    if (query.includes('homework')) {
+                        filteredContent = allContent.filter(c => c.content_type.toLowerCase() === 'homework');
+                    } else if (query.includes('notes') || query.includes('note')) {
+                        filteredContent = allContent.filter(c => c.content_type.toLowerCase().includes('note'));
+                    } else if (query.includes('assignment')) {
+                        filteredContent = allContent.filter(c => c.content_type.toLowerCase() === 'assignment');
+                    }
+                    
+                    // Filter by date
+                    if (query.includes('november 5')) {
+                        filteredContent = filteredContent.filter(c => c.date_uploaded === '2025-11-05');
+                    } else if (query.includes('november 16')) {
+                        filteredContent = filteredContent.filter(c => c.date_uploaded === '2025-11-16');
+                    }
+                    
+                    // Filter by class
+                    if (query.includes('grade 5')) {
+                        filteredContent = filteredContent.filter(c => c.class_name.includes('Grade 5'));
+                    } else if (query.includes('grade 6')) {
+                        filteredContent = filteredContent.filter(c => c.class_name.includes('Grade 6'));
+                    } else if (query.includes('b.e')) {
+                        filteredContent = filteredContent.filter(c => c.class_name.includes('B.E'));
+                    }
+                    
+                    if (filteredContent.length > 0) {
+                        const contentType = query.includes('homework') ? 'homework' : 
+                                           query.includes('notes') ? 'notes' : 'content';
+                        
+                        response = `Found ${filteredContent.length} ${contentType}:\n\n` + 
+                            filteredContent.map(c => {
+                                const icon = c.content_type.toLowerCase().includes('homework') ? '📚' : 
+                                            c.content_type.toLowerCase().includes('note') ? '📝' : '📄';
+                                return `${icon} ${c.subject}: ${c.title}\n   Class: ${c.class_name}\n   Teacher: ${c.teacher_id}\n   Date: ${c.date_uploaded}`;
+                            }).join('\n\n');
+                    } else {
+                        response = "No matching content found. Try asking about homework, notes, or specific dates.";
+                    }
+                }
+                
+                addMessage(response, false);
+            } catch (err) {
+                addMessage("Error: " + err.message, false);
+            }
+        }
+        
+        document.getElementById('input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') sendMessage();
+        });
+        
+        // Welcome message
+        addMessage("Hello! I'm your Smart Digi School Agent. Ask me anything about your school content!", false);
+    </script>
+</body>
+</html>

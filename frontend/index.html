@@ -10,32 +10,79 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
     <link rel="stylesheet" href="./styles/main.css" />
+    <link rel="stylesheet" href="./styles/creative.css" />
   </head>
 
   <body>
     <!-- ========================= HEADER ========================= -->
-    <header>
-      <h1><i class="fa-solid fa-school"></i> School Content Management</h1>
-      <nav>
-        <ul>
-          <li><a href="#"><i class="fa-solid fa-house"></i> Home</a></li>
-          <li><a href="./pages/chat.html"><i class="fa-solid fa-comments"></i> Chat</a></li>
-        </ul>
-      </nav>
+    <header class="creative-header">
+      <div class="header-content">
+        <h1 class="animated-title">
+          <i class="fa-solid fa-graduation-cap pulse"></i> 
+          <span class="gradient-text">Digi School Hub</span>
+          <div class="subtitle">Smart Content Management System</div>
+        </h1>
+        <nav class="modern-nav">
+          <ul>
+            <li><a href="#" class="nav-btn active"><i class="fa-solid fa-house"></i> <span>Dashboard</span></a></li>
+            <li><a href="./pages/chat.html" class="nav-btn"><i class="fa-solid fa-robot"></i> <span>AI Assistant</span></a></li>
+          </ul>
+        </nav>
+      </div>
     </header>
 
     <!-- ========================= MAIN ========================= -->
-    <main>
-      <div class="content-header">
-        <h2>All School Contents</h2>
-        <button class="btn btn-primary" id="addContentBtn">
-          <i class="fa-solid fa-plus"></i> Add Content
+    <main class="creative-main">
+      <div class="dashboard-stats">
+        <div class="stat-card">
+          <i class="fa-solid fa-book-open"></i>
+          <div class="stat-info">
+            <h3 id="totalContent">0</h3>
+            <p>Total Content</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <i class="fa-solid fa-clipboard-list"></i>
+          <div class="stat-info">
+            <h3 id="homeworkCount">0</h3>
+            <p>Homework</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <i class="fa-solid fa-sticky-note"></i>
+          <div class="stat-info">
+            <h3 id="notesCount">0</h3>
+            <p>Notes</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <i class="fa-solid fa-bullhorn"></i>
+          <div class="stat-info">
+            <h3 id="announcementCount">0</h3>
+            <p>Announcements</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-header creative-header-section">
+        <h2 class="section-title">
+          <i class="fa-solid fa-layer-group"></i> 
+          Content Library
+        </h2>
+        <button class="btn btn-primary creative-btn" id="addContentBtn">
+          <i class="fa-solid fa-plus"></i> 
+          <span>Create New</span>
         </button>
       </div>
 
-      <section id="contentList" class="content-list">
-        <p>Loading contents...</p>
+      <section id="contentList" class="content-list creative-grid">
+        <div class="loading-animation">
+          <div class="spinner"></div>
+          <p>Loading your content...</p>
+        </div>
       </section>
+
+
     </main>
 
     <!-- ========================= FOOTER ========================= -->
@@ -91,6 +138,8 @@
       </div>
     </div>
 
+
+
     <!-- ========================= DELETE CONFIRMATION MODAL ========================= -->
     <div id="deleteModal" class="modal">
       <div class="modal-content">
@@ -104,7 +153,7 @@
     </div>
 
     <!-- ========================= SCRIPTS ========================= -->
-    <script type="module" src="./scripts/main.js"></script>
-    <script type="module" src="./services/apiService.js"></script>
+    <script src="./services/apiService.js"></script>
+    <script src="./scripts/main.js"></script>
   </body>
 </html>

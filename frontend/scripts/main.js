@@ -1,4 +1,4 @@
-import ApiService from "../services/apiService.js";
+// ApiService is now available globally
 
 // ===============================
 // DOM ELEMENTS
@@ -27,13 +27,28 @@ document.addEventListener("DOMContentLoaded", loadContents);
 // FETCH AND RENDER CONTENTS
 // ===============================
 async function loadContents() {
+  contentList.innerHTML = `<div class="loading-animation"><div class="spinner"></div><p>Loading your content...</p></div>`;
   try {
-    const contents = await ApiService.get("/schools/");
+    const response = await fetch('http://localhost:8082/schools/');
+    const contents = await response.json();
+    updateStats(contents);
     renderContents(contents);
   } catch (error) {
     console.error("Error fetching contents:", error);
-    contentList.innerHTML = `<p class="error-text">Failed to load school contents.</p>`;
+    contentList.innerHTML = `<p class="error-text">Failed to connect to backend. Error: ${error.message}</p>`;
   }
+}
+
+function updateStats(contents) {
+  const totalContent = contents.length;
+  const homeworkCount = contents.filter(c => c.content_type.toLowerCase() === 'homework').length;
+  const notesCount = contents.filter(c => c.content_type.toLowerCase().includes('note')).length;
+  const announcementCount = contents.filter(c => c.content_type.toLowerCase() === 'announcement').length;
+  
+  document.getElementById('totalContent').textContent = totalContent;
+  document.getElementById('homeworkCount').textContent = homeworkCount;
+  document.getElementById('notesCount').textContent = notesCount;
+  document.getElementById('announcementCount').textContent = announcementCount;
 }
 
 function renderContents(contents = []) {
