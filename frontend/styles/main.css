@@ -1,26 +1,30 @@
-/* ===============================
-   VARIABLES
-==================================*/
+/* =========================================
+   1. THEME VARIABLES & CONFIGURATION
+   ========================================= */
 :root {
-    --color-bg: #f4f6f8;              /* Light, soft background */
-    --color-surface: #ffffff;         /* Card background */
-    --color-primary: #1e40af;         /* Deep blue */
-    --color-primary-light: #3b82f6;   /* Lighter blue accent */
-    --color-accent: #f97316;          /* Warm orange accent */
-    --color-text: #1f2937;            /* Dark gray for text */
-    --color-muted: #6b7280;           /* Muted text */
-    --color-border: #e5e7eb;          /* Subtle borders */
-    --color-shadow: rgba(0, 0, 0, 0.07);
-    --border-radius: 0.75rem;
-    --transition: 0.3s ease;
-    --color-success: #10b981;         /* Green for success */
-    --badge-bg: #f0f9ff;              /* Light blue for badges */
-    --badge-text: #1e40af;            /* Darker badge text */
+    /* -- Color Palette -- */
+    --bg-gradient: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-bg-hover: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    
+    /* -- Text Colors -- */
+    --text-primary: #ffffff;
+    --text-secondary: #b3b3b3;
+    --accent-color: #00d2ff; /* Cyan accent for EdTech vibe */
+    --accent-glow: rgba(0, 210, 255, 0.4);
+
+    /* -- Spacing & Radius -- */
+    --radius-lg: 24px;
+    --radius-md: 16px;
+    --radius-sm: 8px;
+    --sidebar-width: 280px;
 }
 
-/* ===============================
-   GLOBAL STYLES
-==================================*/
+/* =========================================
+   2. GLOBAL RESET & BASE STYLES
+   ========================================= */
 * {
     margin: 0;
     padding: 0;
@@ -28,260 +32,345 @@
 }
 
 body {
-    font-family: "Inter", "Segoe UI", Arial, sans-serif;
-    background-color: var(--color-bg);
-    color: var(--color-text);
+    font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+    background: var(--bg-gradient);
+    color: var(--text-primary);
     min-height: 100vh;
+    line-height: 1.6;
+    overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
-/* ===============================
-   HEADER
-==================================*/
-header {
-    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
-    color: #fff;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem 2rem;
-    border-radius: 0 0 var(--border-radius) var(--border-radius);
-    box-shadow: 0 6px 18px var(--color-shadow);
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
 }
 
-header h1 {
-    display: flex;
-    align-items: center;
-    gap: 0.7rem;
-    font-size: 1.9rem;
-}
-
-nav ul {
-    display: flex;
-    gap: 1rem;
+ul {
     list-style: none;
 }
 
-nav ul li a {
-    text-decoration: none;
-    padding: 0.6rem 1rem;
-    color: #fff;
-    font-weight: 500;
-    border-radius: var(--border-radius);
-    transition: background var(--transition), transform var(--transition);
+/* =========================================
+   3. GLASSMORPHISM UTILITIES
+   ========================================= */
+.glass-panel {
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: var(--radius-lg);
 }
 
-nav ul li a:hover {
-    background-color: rgba(255, 255, 255, 0.15);
-    transform: translateY(-2px);
-}
-
-/* ===============================
-   MAIN CONTENT
-==================================*/
-main {
-    max-width: 1300px;
-    margin: 3rem auto;
-    padding: 0 2rem;
-}
-
-/* Header above cards */
-.content-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2.5rem;
-}
-
-.content-header h2 {
-    font-size: 2rem;
-    color: var(--color-primary);
-}
-
-/* Buttons */
-.btn {
-    background-color: var(--color-accent);
-    color: #fff;
-    padding: 0.75rem 1.6rem;
-    border: none;
-    border-radius: var(--border-radius);
+.glass-button {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 10px 20px;
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
     cursor: pointer;
-    font-size: 1rem;
-    font-weight: 600;
-    box-shadow: 0 3px 12px var(--color-shadow);
-    transition: all var(--transition);
+    font-weight: 500;
+    transition: all 0.3s ease;
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
 }
 
-.btn:hover {
-    background-color: #ea580c;
+.glass-button:hover {
+    background: var(--accent-color);
+    box-shadow: 0 0 15px var(--accent-glow);
+    border-color: transparent;
+    color: #000; /* Dark text on bright accent */
     transform: translateY(-2px);
 }
 
-/* ===============================
-   CONTENT CARDS
-==================================*/
-.content-list {
+/* =========================================
+   4. DASHBOARD LAYOUT (Grid System)
+   ========================================= */
+.dashboard-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 1.8rem;
+    grid-template-columns: var(--sidebar-width) 1fr; /* Sidebar | Content */
+    min-height: 100vh;
 }
 
-.content-card {
-    background-color: var(--color-surface);
-    padding: 1.8rem;
-    border-radius: var(--border-radius);
-    box-shadow: 0 8px 28px var(--color-shadow);
+/* -- Sidebar -- */
+.sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    padding: 30px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    transition: transform var(--transition), box-shadow var(--transition);
-    border-left: 5px solid var(--color-primary-light);
-    height: 95%;
-}
-
-.content-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 14px 36px var(--color-shadow);
-}
-
-.content-info h3 {
-    font-size: 1.35rem;
-    color: var(--color-primary);
-    margin-bottom: 0.5rem;
-}
-
-.content-info p {
-    font-size: 0.95rem;
-    color: var(--color-muted);
-    margin-bottom: 0.4rem;
-}
-
-/* Content type badge */
-.content-type-badge {
-    display: inline-block;
-    background-color: var(--badge-bg);
-    color: var(--badge-text);
-    padding: 0.2rem 0.6rem;
-    border-radius: 0.5rem;
-    font-size: 0.85rem;
-    font-weight: 500;
-    margin-left: 0.5rem;
-}
-
-/* Card actions */
-.content-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.7rem;
-    margin-top: 0.9rem;
-}
-
-.content-actions button {
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    color: var(--color-accent);
-    font-size: 1.25rem;
-    transition: color var(--transition);
-}
-
-.content-actions button:hover {
-    color: var(--color-primary-light);
-}
-
-/* ===============================
-   MODAL FORM
-==================================*/
-.modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.55);
-    justify-content: center;
-    align-items: center;
+    gap: 40px;
+    border-right: 1px solid var(--glass-border);
+    background: rgba(0, 0, 0, 0.2); /* Slightly darker for contrast */
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
     z-index: 100;
 }
 
-.modal-content {
-    background-color: var(--color-surface);
-    padding: 2.5rem;
-    border-radius: var(--border-radius);
-    width: 95%;
-    max-width: 520px;
-    box-shadow: 0 15px 40px var(--color-shadow);
-    animation: fadeIn 0.4s ease;
-    overflow: auto;
-    height: 80%;
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-.modal-content h3 {
-    margin-bottom: 1.5rem;
-    color: var(--color-primary);
-    font-size: 1.6rem;
-    text-align: center;
+.logo span {
+    color: var(--accent-color);
 }
 
-.form-group {
-    margin-bottom: 1.2rem;
+.nav-links li {
+    margin-bottom: 15px;
 }
 
-.form-group label {
-    display: block;
-    margin-bottom: 0.35rem;
-    font-weight: 600;
-    color: var(--color-text);
-}
-
-.form-group input,
-.form-group textarea {
-    width: 100%;
-    padding: 0.7rem;
-    border: 1px solid var(--color-border);
-    border-radius: var(--border-radius);
+.nav-links a {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 20px;
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
     font-size: 0.95rem;
-    transition: border-color var(--transition), box-shadow var(--transition);
 }
 
-.form-group input:focus,
-.form-group textarea:focus {
-    border-color: var(--color-primary-light);
-    box-shadow: 0 0 12px rgba(59, 130, 246, 0.2);
-    outline: none;
+.nav-links a:hover, .nav-links a.active {
+    background: var(--glass-bg-hover);
+    color: var(--text-primary);
+    border-left: 3px solid var(--accent-color);
 }
 
+/* -- Main Content Area -- */
+.main-content {
+    padding: 40px;
+    overflow-y: auto;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.header h1 {
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
+    border: 2px solid var(--glass-border);
+}
+
+/* =========================================
+   5. WIDGETS GRID
+   ========================================= */
+.widgets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.card {
+    padding: 25px;
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    background: var(--glass-bg-hover);
+}
+
+.card h3 {
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* =========================================
+   6. FORM ELEMENTS (Inputs)
+   ========================================= */
+input[type="text"], 
 textarea {
-    resize: vertical;
-    min-height: 80px;
-}
-
-/* Modal buttons */
-.modal-content .btn {
-    width: 48%;
-}
-
-.modal-content .btn:first-child {
-    margin-right: 4%;
-}
-
-/* ===============================
-   FOOTER
-==================================*/
-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
     width: 100%;
-    background-color: var(--color-primary);
-    color: #fff;
-    text-align: center;
-    padding: 1.1rem;
-    font-size: 0.87rem;
-    box-shadow: 0 -2px 12px var(--color-shadow);
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--glass-border);
+    padding: 15px;
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    outline: none;
+    font-family: inherit;
+    transition: border-color 0.3s ease;
 }
 
-/* ===============================
-   ANIMATIONS
-==================================*/
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-25px); }
-    to { opacity: 1; transform: translateY(0); }
+input[type="text"]:focus, 
+textarea:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 10px rgba(0, 210, 255, 0.1);
+}
+
+/* =========================================
+   7. RESPONSIVE DESIGN
+   ========================================= */
+@media (max-width: 768px) {
+    .dashboard-container {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+        display: none; /* Hidden on mobile for now */
+    }
+
+    .main-content {
+        padding: 20px;
+    }
+}
+
+/* =========================================
+   8. ADDITIONAL UTILITY CLASSES
+   ========================================= */
+.logo-icon {
+    color: var(--accent-color);
+}
+
+.sidebar-footer {
+    margin-top: auto;
+}
+
+.logout-link {
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 20px;
+}
+
+.header-subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.notification-icon {
+    position: relative;
+    margin-right: 20px;
+    cursor: pointer;
+}
+
+.notification-icon i {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+}
+
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 10px;
+    height: 10px;
+    background: #ff6b6b;
+    border-radius: 50%;
+}
+
+.quick-assist-icon {
+    color: var(--accent-color);
+}
+
+.quick-assist-text {
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    color: #ddd;
+}
+
+.quick-assist-input {
+    margin-bottom: 15px;
+}
+
+.full-width-button {
+    width: 100%;
+}
+
+.arrow-icon {
+    margin-left: 8px;
+}
+
+.progress-icon {
+    color: #ff9a9e;
+}
+
+.chart-container {
+    position: relative;
+    height: 160px;
+    width: 100%;
+}
+
+.schedule-icon {
+    color: #a18cd1;
+}
+
+.schedule-content {
+    margin-top: 15px;
+}
+
+.schedule-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.schedule-time {
+    color: var(--accent-color);
+    font-weight: 500;
+}
+
+.schedule-details {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
+
+.assignments-icon {
+    color: #fbc2eb;
+}
+
+.assignments-list {
+    margin-top: 15px;
+}
+
+.assignment-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.assignment-item:last-child {
+    border-bottom: none;
+}
+
+.assignment-due-today {
+    color: #ff6b6b;
+    font-size: 0.85rem;
+    background: rgba(255,107,107,0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.assignment-due-tomorrow {
+    color: var(--accent-color);
+    font-size: 0.85rem;
 }

@@ -1,10 +1,13 @@
 import os
 import uvicorn
+from fastapi import FastAPI
 from core.sqlite_db import SQLiteDB
 from google.adk.cli.fast_api import get_fast_api_app
 from fastapi.middleware.cors import CORSMiddleware
 from services import school_service
-from routers import school
+from routers import school, dashboard
+
+app = FastAPI()
 
 AGENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -31,6 +34,7 @@ app.add_middleware(
 
 # Include routers
 app.include_router(school.router, prefix="/schools", tags=["School Content"])
+app.include_router(dashboard.router)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 8001)))

@@ -1,6 +1,16 @@
-from google.adk.agents import LlmAgent
+from google_adk.agents import LlmAgent
 from agent.tools import *
 from agent.prompt import *
+
+def generate_response(self, query: str, context: dict | None = None):
+    # Add system prompt tuning for the new persona
+    system_prompt = """
+    You are the DigiSchool AI Tutor. 
+    You are helpful, encouraging, and precise.
+    The user is viewing their dashboard. 
+    If they ask about their performance, refer to the available stats.
+    """
+    # ... integration with LLM logic
 
 Model = "gemini-2.0-flash"
 root_agent=LlmAgent(

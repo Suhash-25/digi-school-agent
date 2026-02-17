@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from typing import List, Optional
 from models.data_model import SchoolContent, TeacherProfile
 from services import school_service
@@ -66,6 +66,24 @@ def create_teacher(teacher: TeacherProfile):
         (teacher.teacher_id, teacher.name, teacher.subject_specialization, teacher.department)
     )
     return teacher
+
+@router.get("/dashboard/stats")
+async def get_dashboard_stats():
+    """
+    Returns aggregated data for the dashboard widgets:
+    - Upcoming exams
+    - Attendance percentage
+    - Recent AI chat topics
+    """
+    # Mock data for now, replace with DB queries later
+    return {
+        "attendance": 85,
+        "upcoming_exams": [
+            {"subject": "Mathematics", "date": "2026-02-20"},
+            {"subject": "Physics", "date": "2026-02-24"}
+        ],
+        "learning_streak": 5
+    }
 
 @router.post("/chat", response_model=ChatResponse)
 async def chat_with_agent(request: ChatRequest):
