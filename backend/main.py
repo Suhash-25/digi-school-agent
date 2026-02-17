@@ -6,12 +6,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from services import school_service
 from routers import school
 
-
-# Get the directory where main.py is located
 AGENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Configure allowed origins for CORS - Add your domains here
-ALLOWED_ORIGINS = ["*"]  # Only for dev; restrict later
+ALLOWED_ORIGINS = ["http://127.0.0.1:5500"]  # Only for dev; restrict later
 
 SERVE_WEB_INTERFACE = True
 
@@ -25,7 +23,7 @@ app = get_fast_api_app(
 # ✅ Add CORS middleware manually
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=ALLOWED_ORIGINS,  # e.g., ["http://127.0.0.1:5500"]
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -35,4 +33,4 @@ app.add_middleware(
 app.include_router(school.router, prefix="/schools", tags=["School Content"])
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 8082)))
+    uvicorn.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 8001)))

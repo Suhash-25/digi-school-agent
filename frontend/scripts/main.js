@@ -152,13 +152,21 @@ contentForm.addEventListener("submit", async (e) => {
   try {
     if (editContentId) {
       await ApiService.put(`/schools/${editContentId}`, contentData);
+
     } else {
       await ApiService.post("/schools/", contentData);
+
     }
     closeModal();
     loadContents();
+    
+    // Update advanced search
+    if (window.advancedSearch) {
+      advancedSearch.loadContent();
+    }
   } catch (error) {
     console.error("Error saving content:", error);
+
   }
 });
 
@@ -212,8 +220,16 @@ confirmDeleteBtn.addEventListener("click", async () => {
     deleteModal.style.display = "none";
     deleteContentId = "";
     loadContents();
+    
+    // Update advanced search
+    if (window.advancedSearch) {
+      advancedSearch.loadContent();
+    }
+    
+
   } catch (error) {
     console.error("Error deleting content:", error);
+
   }
 });
 
